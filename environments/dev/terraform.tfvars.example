@@ -1,0 +1,61 @@
+# Project Configuration
+project_id   = "my-gcp-project-dev"
+project_name = "my-project"
+region       = "asia-northeast1"
+zone         = "asia-northeast1-a"
+
+# Network Configuration
+vpc_name = "dev-vpc"
+subnet_cidrs = {
+  public  = "10.0.1.0/24"
+  private = "10.0.2.0/24"
+}
+
+# GKE Configuration
+gke_cluster_name = "dev-cluster"
+gke_node_count   = 2
+gke_machine_type = "e2-standard-2"
+gke_disk_size_gb = 20
+
+# Cloud SQL Configuration
+db_name          = "dev-database"
+db_instance_type = "db-f1-micro"
+db_version       = "POSTGRES_15"
+
+# Storage Configuration
+storage_bucket_names = [
+  "dev-app-storage",
+  "dev-backup-storage"
+]
+
+# Service Accounts
+service_accounts = [
+  {
+    account_id   = "dev-app-sa"
+    display_name = "Development Application Service Account"
+    roles = [
+      "roles/storage.objectViewer",
+      "roles/cloudsql.client"
+    ]
+  }
+]
+
+# Monitoring Configuration
+notification_channels = [
+  {
+    display_name = "Dev Team Email"
+    type         = "email"
+    labels = {
+      email_address = "dev-team@company.com"
+    }
+  }
+]
+
+# Common Tags
+tags = {
+  Environment = "development"
+  Project     = "my-project"
+  Owner       = "dev-team"
+  CostCenter  = "engineering"
+  Terraform   = "true"
+}
