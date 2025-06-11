@@ -14,7 +14,7 @@ terraform {
   
   backend "gcs" {
     bucket = "your-terraform-state-bucket"
-    prefix = "environments/dev"
+    prefix = "environments/production"
   }
 }
 
@@ -33,11 +33,11 @@ provider "google-beta" {
 # Local values for common tags and naming
 locals {
   common_tags = merge(var.tags, {
-    Environment = "development"
+    Environment = "production"
     ManagedBy   = "terraform"
   })
   
-  name_prefix = "${var.project_name}-dev"
+  name_prefix = "${var.project_name}-prod"
 }
 
 # VPC Module
@@ -58,22 +58,17 @@ module "vpc" {
 module "gke" {
   source = "../../modules/gke"
   
-  project_id      = var.project_id
-  region          = var.region
-  zone_or_region  = var.region
-  name_prefix     = local.name_prefix
+  project_id   = var.project_id
+  region       = var.region
+  name_prefix  = local.name_prefix
   
-  cluster_name           = var.gke_cluster_name
-  initial_node_count     = var.gke_node_count
-  min_node_count         = var.gke_node_count
-  max_node_count         = var.gke_node_count * 2
-  machine_type           = var.gke_machine_type
-  disk_size_gb           = var.gke_disk_size_gb
+  cluster_name    = var.gke_cluster_name
+  node_count      = var.gke_node_count
+  machine_type    = var.gke_machine_type
+  disk_size_gb    = var.gke_disk_size_gb
   
-  network              = module.vpc.network_name
-  subnetwork           = module.vpc.public_subnet_name
-  pods_range_name      = module.vpc.pods_range_name
-  services_range_name  = module.vpc.services_range_name
+  network    = module.vpc.network_name
+  subnetwork = module.vpc.subnet_name
   
   tags = local.common_tags
   
@@ -107,25 +102,7 @@ module "storage" {
   region      = var.region
   name_prefix = local.name_prefix
   
-  bucket_configs = {
-    main = {
-      location                     = var.region
-      storage_class               = "STANDARD"
-      force_destroy               = true  # for dev environment
-      uniform_bucket_level_access = true
-      public_access_prevention    = "enforced"
-      versioning_enabled          = false  # for dev environment
-      kms_key_name               = null
-      access_logs_bucket         = null
-      access_logs_prefix         = null
-      labels                     = {}
-      lifecycle_rules            = []
-      cors_config                = null
-      website_config             = null
-      retention_policy           = null
-      notification_configs       = []
-    }
-  }
+  bucket_names = var.storage_bucket_names
   
   tags = local.common_tags
 }
@@ -138,14 +115,7 @@ module "monitoring" {
   region      = var.region
   name_prefix = local.name_prefix
   
-  # Basic monitoring for dev environment
-  email_notification_channels = {
-    default = {
-      display_name  = "Default Email"
-      email_address = "admin@example.com"
-      enabled       = true
-    }
-  }
+  notification_channels = var.notification_channels
   
   tags = local.common_tags
 }
@@ -158,13 +128,7 @@ module "security" {
   region      = var.region
   name_prefix = local.name_prefix
   
-  service_accounts = {
-    app = {
-      display_name = "Application Service Account"
-      description  = "Service account for application workloads"
-      roles        = ["roles/storage.objectViewer"]
-    }
-  }
+  service_accounts = var.service_accounts
   
   tags = local.common_tags
 }

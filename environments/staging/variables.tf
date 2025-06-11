@@ -28,17 +28,9 @@ variable "vpc_name" {
 variable "subnet_cidrs" {
   description = "CIDR blocks for subnets"
   type = object({
-    public   = string
-    private  = string
-    pods     = string
-    services = string
+    public  = string
+    private = string
   })
-  default = {
-    public   = "10.0.1.0/24"
-    private  = "10.0.2.0/24"
-    pods     = "10.1.0.0/16"
-    services = "10.2.0.0/16"
-  }
 }
 
 variable "gke_cluster_name" {
