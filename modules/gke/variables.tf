@@ -1,3 +1,4 @@
+# Basic Configuration
 variable "project_id" {
   description = "GCP project ID"
   type        = string
@@ -13,310 +14,207 @@ variable "name_prefix" {
   type        = string
 }
 
-variable "cluster_name" {
-  description = "Name of the GKE cluster"
-  type        = string
-}
-
-variable "zone_or_region" {
-  description = "Zone or region for the cluster (zone for zonal cluster, region for regional cluster)"
-  type        = string
-  default     = null
-}
-
-variable "network" {
-  description = "VPC network name"
-  type        = string
-}
-
-variable "subnetwork" {
-  description = "VPC subnetwork name"
-  type        = string
-}
-
-variable "pods_range_name" {
-  description = "Name of the secondary range for pods"
-  type        = string
-}
-
-variable "services_range_name" {
-  description = "Name of the secondary range for services"
-  type        = string
-}
-
-# Cluster configuration
-variable "enable_private_endpoint" {
-  description = "Enable private endpoint for the cluster master"
-  type        = bool
-  default     = false
-}
-
-variable "master_ipv4_cidr_block" {
-  description = "CIDR block for the cluster master"
-  type        = string
-  default     = "172.16.0.0/28"
-}
-
-variable "enable_master_global_access" {
-  description = "Enable global access to the cluster master"
-  type        = bool
-  default     = false
-}
-
-variable "master_authorized_networks" {
-  description = "List of master authorized networks"
-  type = list(object({
-    cidr_block   = string
-    display_name = string
-  }))
-  default = []
-}
-
-# Node pool configuration
-variable "initial_node_count" {
-  description = "Initial number of nodes in the primary node pool"
-  type        = number
-  default     = 1
-}
-
-variable "min_node_count" {
-  description = "Minimum number of nodes in the primary node pool"
-  type        = number
-  default     = 1
-}
-
-variable "max_node_count" {
-  description = "Maximum number of nodes in the primary node pool"
-  type        = number
-  default     = 3
-}
-
-variable "machine_type" {
-  description = "Machine type for cluster nodes"
-  type        = string
-  default     = "e2-standard-2"
-}
-
-variable "disk_type" {
-  description = "Disk type for cluster nodes"
-  type        = string
-  default     = "pd-standard"
-}
-
-variable "disk_size_gb" {
-  description = "Disk size in GB for cluster nodes"
-  type        = number
-  default     = 100
-}
-
-variable "image_type" {
-  description = "Image type for cluster nodes"
-  type        = string
-  default     = "COS_CONTAINERD"
-}
-
-variable "preemptible" {
-  description = "Use preemptible instances for cluster nodes"
-  type        = bool
-  default     = false
-}
-
-variable "auto_repair" {
-  description = "Enable auto repair for cluster nodes"
-  type        = bool
-  default     = true
-}
-
-variable "auto_upgrade" {
-  description = "Enable auto upgrade for cluster nodes"
-  type        = bool
-  default     = true
-}
-
-variable "node_oauth_scopes" {
-  description = "OAuth scopes for cluster nodes"
-  type        = list(string)
-  default = [
-    "https://www.googleapis.com/auth/logging.write",
-    "https://www.googleapis.com/auth/monitoring",
-    "https://www.googleapis.com/auth/devstorage.read_only",
-    "https://www.googleapis.com/auth/servicecontrol",
-    "https://www.googleapis.com/auth/service.management.readonly",
-    "https://www.googleapis.com/auth/trace.append"
-  ]
-}
-
-variable "node_tags" {
-  description = "Network tags for cluster nodes"
-  type        = list(string)
-  default     = []
-}
-
-variable "node_taints" {
-  description = "Taints for cluster nodes"
-  type = list(object({
-    key    = string
-    value  = string
-    effect = string
-  }))
-  default = []
-}
-
-# Upgrade settings
-variable "max_surge" {
-  description = "Maximum number of nodes that can be created during upgrade"
-  type        = number
-  default     = 1
-}
-
-variable "max_unavailable" {
-  description = "Maximum number of nodes that can be unavailable during upgrade"
-  type        = number
-  default     = 0
-}
-
-# Security
-variable "enable_shielded_nodes" {
-  description = "Enable shielded nodes"
-  type        = bool
-  default     = true
-}
-
-variable "enable_secure_boot" {
-  description = "Enable secure boot for nodes"
-  type        = bool
-  default     = true
-}
-
-variable "enable_integrity_monitoring" {
-  description = "Enable integrity monitoring for nodes"
-  type        = bool
-  default     = true
-}
-
-variable "enable_binary_authorization" {
-  description = "Enable binary authorization"
-  type        = bool
-  default     = false
-}
-
-# Network policy
-variable "enable_network_policy" {
-  description = "Enable network policy"
-  type        = bool
-  default     = true
-}
-
-# Add-ons
-variable "enable_http_load_balancing" {
-  description = "Enable HTTP load balancing add-on"
-  type        = bool
-  default     = true
-}
-
-variable "enable_horizontal_pod_autoscaling" {
-  description = "Enable horizontal pod autoscaling add-on"
-  type        = bool
-  default     = true
-}
-
-variable "enable_filestore_csi_driver" {
-  description = "Enable Filestore CSI driver"
-  type        = bool
-  default     = false
-}
-
-variable "enable_gce_pd_csi_driver" {
-  description = "Enable GCE Persistent Disk CSI driver"
-  type        = bool
-  default     = true
-}
-
-# Cluster autoscaling
-variable "enable_cluster_autoscaling" {
-  description = "Enable cluster autoscaling"
-  type        = bool
-  default     = false
-}
-
-variable "cluster_autoscaling_config" {
-  description = "Cluster autoscaling configuration"
+# 🔥 Modern Cluster Configuration
+variable "cluster_config" {
+  description = "Comprehensive GKE cluster configuration"
   type = object({
-    cpu_min    = number
-    cpu_max    = number
-    memory_min = number
-    memory_max = number
+    name            = string
+    location        = optional(string)
+    network         = string
+    subnetwork      = string
+    
+    # Network ranges
+    pods_range_name     = optional(string, "gke-pods")
+    services_range_name = optional(string, "gke-services")
+    
+    # Privacy & Security
+    enable_private_endpoint = optional(bool, true)
+    enable_private_nodes   = optional(bool, true)
+    master_ipv4_cidr_block = optional(string, "172.16.0.0/28")
+    
+    # Features
+    enable_network_policy     = optional(bool, true)
+    enable_workload_identity = optional(bool, true)
+    enable_shielded_nodes    = optional(bool, true)
+    enable_binary_authorization = optional(bool, false)
+    
+    # Logging & Monitoring  
+    logging_components   = optional(list(string), ["SYSTEM_COMPONENTS", "WORKLOADS"])
+    monitoring_components = optional(list(string), ["SYSTEM_COMPONENTS", "WORKLOADS"])
+    
+    # Maintenance
+    maintenance_start_time = optional(string, "03:00")
+    maintenance_end_time   = optional(string, "07:00")
+    maintenance_recurrence = optional(string, "FREQ=WEEKLY;BYDAY=SA")
+    
+    # Addons
+    enable_http_load_balancing        = optional(bool, true)
+    enable_horizontal_pod_autoscaling = optional(bool, true)
+    enable_kubernetes_alpha          = optional(bool, false)
+    enable_istio                     = optional(bool, false)
   })
-  default = {
-    cpu_min    = 1
-    cpu_max    = 100
-    memory_min = 1
-    memory_max = 1000
-  }
-}
-
-# Maintenance
-variable "maintenance_start_time" {
-  description = "Start time for daily maintenance window (HH:MM format)"
-  type        = string
-  default     = "03:00"
-}
-
-variable "release_channel" {
-  description = "Release channel for GKE cluster"
-  type        = string
-  default     = "STABLE"
   
   validation {
-    condition     = contains(["RAPID", "REGULAR", "STABLE"], var.release_channel)
-    error_message = "Release channel must be one of: RAPID, REGULAR, STABLE."
+    condition = can(cidrhost(var.cluster_config.master_ipv4_cidr_block, 0))
+    error_message = "master_ipv4_cidr_block must be a valid CIDR block."
+  }
+  
+  validation {
+    condition = length(var.cluster_config.name) <= 40
+    error_message = "Cluster name must be 40 characters or less."
   }
 }
 
-# Logging and monitoring
-variable "logging_service" {
-  description = "Logging service for the cluster"
-  type        = string
-  default     = "logging.googleapis.com/kubernetes"
-}
-
-variable "monitoring_service" {
-  description = "Monitoring service for the cluster"
-  type        = string
-  default     = "monitoring.googleapis.com/kubernetes"
-}
-
-# Additional node pools
-variable "additional_node_pools" {
-  description = "Map of additional node pools"
+# 🔥 Modern Node Pool Configuration
+variable "node_pools" {
+  description = "Node pool configurations with smart defaults"
   type = map(object({
-    initial_node_count          = number
-    min_node_count              = number
-    max_node_count              = number
-    machine_type                = string
-    disk_type                   = string
-    disk_size_gb                = number
-    image_type                  = string
-    preemptible                 = bool
-    auto_repair                 = bool
-    auto_upgrade                = bool
-    max_surge                   = number
-    max_unavailable             = number
-    enable_secure_boot          = bool
-    enable_integrity_monitoring = bool
-    labels                      = map(string)
-    taints = list(object({
+    # Basic Configuration
+    machine_type = optional(string, "e2-standard-4")
+    disk_size_gb = optional(number, 100)
+    disk_type    = optional(string, "pd-standard")
+    image_type   = optional(string, "COS_CONTAINERD")
+    
+    # Scaling
+    initial_node_count = optional(number, 1)
+    min_node_count    = optional(number, 1)
+    max_node_count    = optional(number, 10)
+    
+    # Node Management
+    auto_repair  = optional(bool, true)
+    auto_upgrade = optional(bool, true)
+    preemptible  = optional(bool, false)
+    spot         = optional(bool, false)
+    
+    # Networking
+    enable_ip_alias = optional(bool, true)
+    
+    # Security
+    service_account_email = optional(string)
+    oauth_scopes = optional(list(string), [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ])
+    
+    # Taints
+    taints = optional(list(object({
       key    = string
       value  = string
       effect = string
-    }))
-    additional_tags = list(string)
+    })), [])
+    
+    # Labels
+    labels = optional(map(string), {})
+    
+    # Metadata
+    metadata = optional(map(string), {
+      disable-legacy-endpoints = "true"
+    })
   }))
+  default = {
+    default = {}
+  }
+  
+  validation {
+    condition = alltrue([
+      for pool_name, config in var.node_pools :
+      config.min_node_count <= config.max_node_count
+    ])
+    error_message = "min_node_count must be less than or equal to max_node_count for all node pools."
+  }
+}
+
+# 🔥 Modern Service Account Configuration
+variable "service_account_config" {
+  description = "Service account configuration for GKE"
+  type = object({
+    create_new = optional(bool, true)
+    email      = optional(string)
+    
+    # Workload Identity
+    enable_workload_identity = optional(bool, true)
+    kubernetes_namespace     = optional(string, "default")
+    kubernetes_service_account = optional(string, "default")
+    
+    # IAM Roles
+    additional_roles = optional(list(string), [
+      "roles/monitoring.metricWriter",
+      "roles/monitoring.viewer",
+      "roles/logging.logWriter"
+    ])
+  })
   default = {}
 }
 
+# Environment-aware Defaults
+variable "environment" {
+  description = "Environment name (dev, staging, production)"
+  type        = string
+  default     = "dev"
+  
+  validation {
+    condition     = contains(["dev", "staging", "production"], var.environment)
+    error_message = "Environment must be one of: dev, staging, production."
+  }
+}
+
+# Resource Tagging
 variable "tags" {
-  description = "Tags to apply to resources"
+  description = "Tags to apply to all resources"
   type        = map(string)
   default     = {}
+}
+
+# Advanced Features
+variable "advanced_config" {
+  description = "Advanced GKE configuration options"
+  type = object({
+    # Network Policy
+    network_policy_provider = optional(string, "CALICO")
+    
+    # Resource Usage Export
+    enable_resource_consumption_export = optional(bool, false)
+    resource_consumption_bigquery_dataset = optional(string)
+    
+    # Database Encryption
+    database_encryption_state    = optional(string, "DECRYPTED")
+    database_encryption_key_name = optional(string)
+    
+    # Master Auth
+    enable_legacy_abac = optional(bool, false)
+    
+    # IP Allocation Policy
+    cluster_ipv4_cidr_block  = optional(string)
+    services_ipv4_cidr_block = optional(string)
+    
+    # Private Cluster Config
+    enable_private_nodes    = optional(bool, true)
+    master_authorized_networks = optional(list(object({
+      cidr_block   = string
+      display_name = optional(string)
+    })), [])
+  })
+  default = {}
+}
+
+# Cost Optimization
+variable "cost_optimization" {
+  description = "Cost optimization settings"
+  type = object({
+    enable_preemptible_nodes = optional(bool, false)
+    enable_spot_nodes       = optional(bool, false)
+    auto_scaling_enabled    = optional(bool, true)
+    
+    # Node auto-provisioning
+    enable_node_auto_provisioning = optional(bool, false)
+    max_pods_per_node            = optional(number, 110)
+    
+    # Resource limits for auto-provisioning
+    auto_provisioning_defaults = optional(object({
+      min_cpu_platform = optional(string, "Intel Skylake")
+      oauth_scopes = optional(list(string), [
+        "https://www.googleapis.com/auth/cloud-platform"
+      ])
+    }))
+  })
+  default = {}
 }

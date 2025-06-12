@@ -1,14 +1,14 @@
 # ☁️ Terraform GCP Blueprint
 
 [![CI](https://github.com/mugipan-en/terraform-gcp-blueprint/actions/workflows/ci.yml/badge.svg)](https://github.com/mugipan-en/terraform-gcp-blueprint/actions/workflows/ci.yml)
-[![Security](https://github.com/mugipan-en/terraform-gcp-blueprint/actions/workflows/security.yml/badge.svg)](https://github.com/mugipan-en/terraform-gcp-blueprint/actions/workflows/security.yml)
 [![Terraform](https://img.shields.io/badge/Terraform-1.5+-623CE4.svg)](https://www.terraform.io/)
 [![GCP](https://img.shields.io/badge/GCP-Compatible-4285F4.svg)](https://cloud.google.com/)
+[![Security](https://img.shields.io/badge/Security-tfsec%20%7C%20tflint-green.svg)](https://github.com/aquasecurity/tfsec)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Production-ready Terraform modules for Google Cloud Platform with multi-environment support**
+**Enterprise-grade Terraform modules for Google Cloud Platform with 20+ services and multi-environment support**
 
-プロダクション対応のGCPインフラを短時間で構築。セキュリティベストプラクティスと運用性を重視した設計。
+プロダクション対応のGCPインフラを短時間で構築。20のサービスモジュール、包括的ドキュメント、既存リソース移行ガイド付き。
 
 ## 🏗️ アーキテクチャ
 
@@ -18,14 +18,27 @@ environments/
 ├── staging/      # ステージング環境
 └── production/   # 本番環境
 
-modules/
-├── vpc/          # VPC・ネットワーク
-├── gke/          # Google Kubernetes Engine
-├── cloud-run/    # Cloud Run サービス
-├── cloud-sql/    # Cloud SQL データベース
-├── storage/      # Cloud Storage
-├── monitoring/   # Cloud Monitoring・Logging
-└── security/     # IAM・Secret Manager
+modules/                      # 20の包括的サービスモジュール
+├── vpc/                    # VPC・ネットワーク
+├── gke/                    # Google Kubernetes Engine
+├── cloud-run/              # Cloud Run サーバーレスコンテナ
+├── cloud-sql/              # Cloud SQL データベース
+├── storage/                # Cloud Storage オブジェクトストレージ
+├── monitoring/             # Cloud Monitoring・Logging
+├── security/               # IAM・Secret Manager・KMS
+├── load-balancer/          # Cloud Load Balancing・CDN
+├── memorystore/            # Redis・Memcached キャッシュ
+├── pubsub/                 # Cloud Pub/Sub メッセージング
+├── cloud-functions/        # Cloud Functions サーバーレス関数
+├── bigquery/               # BigQuery データウェアハウス
+├── cloud-dns/              # Cloud DNS ドメイン管理
+├── app-engine/             # App Engine Webアプリケーション
+├── cloud-endpoints/        # Cloud Endpoints API管理
+├── cloud-tasks/            # Cloud Tasks 非同期処理
+├── cloud-firestore/        # Cloud Firestore NoSQLデータベース
+├── cloud-spanner/          # Cloud Spanner 分散SQLデータベース
+├── cloud-build/            # Cloud Build CI/CD
+└── artifact-registry/      # Artifact Registry コンテナ・パッケージ管理
 ```
 
 ## 🚀 クイックスタート
@@ -76,34 +89,38 @@ make apply-staging
 
 ## 📋 主な機能
 
-### ✅ ネットワーキング
-- **VPC**: マルチリージョン対応のセキュアVPC
-- **サブネット**: public/private サブネット分離
-- **ファイアウォール**: 最小権限のセキュリティルール
-- **Cloud NAT**: プライベートサブネットのアウトバウンド接続
-- **Load Balancer**: HTTPS/SSL対応のグローバルロードバランサー
+### 🌐 **ネットワーキング & セキュリティ**
+- **VPC**: マルチリージョン対応のセキュアVPC・サブネット分離
+- **Load Balancer**: Cloud Armor統合、SSL終端、CDN対応
+- **Cloud DNS**: ドメイン管理・プライベートDNS・DNSSEC
+- **IAM**: 最小権限アクセス制御・サービスアカウント管理
+- **Secret Manager**: 機密情報の安全な管理・自動ローテーション
+- **Cloud KMS**: 暗号化キー管理・HSM対応
 
-### 🚢 コンピューティング
-- **GKE**: オートスケーリング対応Kubernetesクラスター
-- **Cloud Run**: サーバーレスコンテナ実行環境
-- **Compute Engine**: 高可用性VM構成（オプション）
+### 🚀 **コンピューティング & サーバーレス**
+- **GKE**: オートスケーリング・Workload Identity・プライベートクラスター
+- **Cloud Run**: サーバーレスコンテナ・VPC統合・トラフィック分割
+- **App Engine**: Standard/Flexible環境・Blue/Greenデプロイ
+- **Cloud Functions**: Gen1/Gen2対応・イベントドリブン・VPC統合
 
-### 🗄️ データストレージ
-- **Cloud SQL**: 高可用性PostgreSQL/MySQL
-- **Cloud Storage**: バックアップ・静的ファイル用バケット
-- **Memorystore**: Redis キャッシュ
+### 🗄️ **データベース & ストレージ**
+- **Cloud SQL**: HA構成・読み取りレプリカ・自動バックアップ
+- **Cloud Firestore**: リアルタイム同期・セキュリティルール・インデックス管理
+- **Cloud Spanner**: グローバル分散SQL・無制限スケーリング・ACID保証
+- **BigQuery**: データウェアハウス・ML統合・ストリーミング分析
+- **Cloud Storage**: ライフサイクル管理・マルチリージョン・暗号化
+- **Memorystore**: Redis/Memcached・高可用性・自動フェイルオーバー
 
-### 🔐 セキュリティ
-- **IAM**: 最小権限アクセス制御
-- **Secret Manager**: 機密情報の安全な管理
-- **VPC Security**: プライベートサービスアクセス
-- **Cloud KMS**: 暗号化キー管理
+### 🔧 **DevOps & 統合**
+- **Cloud Build**: CI/CDパイプライン・GitHub統合・並列ビルド
+- **Artifact Registry**: コンテナ・パッケージ管理・脆弱性スキャン
+- **Cloud Endpoints**: API管理・認証・レート制限・監視
+- **Cloud Tasks**: 非同期処理・リトライポリシー・レート制御
+- **Cloud Pub/Sub**: メッセージング・イベントドリブン・デッドレターキュー
 
-### 📊 監視・運用
-- **Cloud Monitoring**: メトリクス・アラート
-- **Cloud Logging**: 構造化ログ管理
-- **Error Reporting**: エラー追跡
-- **Cloud Trace**: 分散トレーシング
+### 📊 **監視・運用**
+- **Cloud Monitoring**: メトリクス・アラート・ダッシュボード・SLI/SLO
+- **Cloud Logging**: 構造化ログ・BigQueryエクスポート・リアルタイム分析
 
 ## 🔧 使用方法
 
@@ -172,7 +189,8 @@ terraform-gcp-blueprint/
 │   ├── cloud-sql/
 │   └── monitoring/
 ├── scripts/              # ヘルパースクリプト
-├── docs/                 # ドキュメント
+├── docs/                 # 包括的ドキュメント
+│   └── gcp-resources-guide.md  # 1,600行超の詳細ガイド
 ├── .github/workflows/    # CI/CD
 ├── terragrunt.hcl       # Terragrunt設定
 ├── Makefile

@@ -1,6 +1,56 @@
+# 🔥 Smart Environment Configuration
+locals {
+  # Environment-based defaults
+  environment_defaults = {
+    dev = {
+      min_scale             = 0
+      max_scale             = 10
+      container_concurrency = 80
+      cpu_limit            = "1000m"
+      memory_limit         = "512Mi"
+      timeout_seconds      = 300
+      execution_environment = "EXECUTION_ENVIRONMENT_GEN2"
+      cpu_throttling       = true
+      allow_unauthenticated = true
+    }
+    staging = {
+      min_scale             = 1
+      max_scale             = 20
+      container_concurrency = 80
+      cpu_limit            = "1000m"
+      memory_limit         = "1Gi"
+      timeout_seconds      = 300
+      execution_environment = "EXECUTION_ENVIRONMENT_GEN2"
+      cpu_throttling       = true
+      allow_unauthenticated = false
+    }
+    production = {
+      min_scale             = 2
+      max_scale             = 100
+      container_concurrency = 100
+      cpu_limit            = "2000m"
+      memory_limit         = "2Gi"
+      timeout_seconds      = 300
+      execution_environment = "EXECUTION_ENVIRONMENT_GEN2"
+      cpu_throttling       = false
+      allow_unauthenticated = false
+    }
+  }
+  
+  # Merge environment defaults with user configuration for each service
+  env_config = local.environment_defaults[var.environment]
+  
+  # Final services configuration
+  services_config = {
+    for name, service in var.services : name => merge(local.env_config, service, {
+      location = service.location != null ? service.location : var.region
+    })
+  }
+}
+
 # Cloud Run Services
 resource "google_cloud_run_service" "services" {
-  for_each = var.services
+  for_each = local.services_config
 
   name     = "${var.name_prefix}-${each.key}"
   location = each.value.location
