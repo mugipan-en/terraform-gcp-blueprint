@@ -92,7 +92,7 @@ variable "secret_data" {
     data       = string
     enabled    = bool
   }))
-  default = {}
+  default   = {}
   sensitive = true
 }
 

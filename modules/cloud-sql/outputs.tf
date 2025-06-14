@@ -111,13 +111,13 @@ output "read_replica_instances" {
 output "connection_info" {
   description = "Connection information for applications"
   value = {
-    host              = google_sql_database_instance.main.private_ip_address
-    port              = var.database_version == "POSTGRES_14" ? 5432 : (startswith(var.database_version, "MYSQL") ? 3306 : 1433)
-    database          = google_sql_database.default.name
-    username          = google_sql_user.default_user.name
-    password_secret   = google_secret_manager_secret.db_password.secret_id
-    connection_name   = google_sql_database_instance.main.connection_name
-    ssl_required      = var.require_ssl
+    host            = google_sql_database_instance.main.private_ip_address
+    port            = var.database_version == "POSTGRES_14" ? 5432 : (startswith(var.database_version, "MYSQL") ? 3306 : 1433)
+    database        = google_sql_database.default.name
+    username        = google_sql_user.default_user.name
+    password_secret = google_secret_manager_secret.db_password.secret_id
+    connection_name = google_sql_database_instance.main.connection_name
+    ssl_required    = var.require_ssl
   }
   sensitive = true
 }

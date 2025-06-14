@@ -9,9 +9,9 @@ resource "random_password" "db_password" {
 
 # Main database
 resource "google_sql_database" "main" {
-  name     = local.final_database_config.name
-  instance = google_sql_database_instance.main.name
-  charset  = local.final_database_config.charset
+  name      = local.final_database_config.name
+  instance  = google_sql_database_instance.main.name
+  charset   = local.final_database_config.charset
   collation = local.final_database_config.collation
 
   depends_on = [
@@ -23,9 +23,9 @@ resource "google_sql_database" "main" {
 resource "google_sql_database" "additional" {
   for_each = toset(local.final_database_config.additional_databases)
 
-  name     = each.value
-  instance = google_sql_database_instance.main.name
-  charset  = local.final_database_config.charset
+  name      = each.value
+  instance  = google_sql_database_instance.main.name
+  charset   = local.final_database_config.charset
   collation = local.final_database_config.collation
 
   depends_on = [

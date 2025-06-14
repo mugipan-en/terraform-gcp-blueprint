@@ -89,7 +89,7 @@ resource "google_pubsub_subscription" "subscriptions" {
         for_each = push_config.value.oidc_token != null ? [push_config.value.oidc_token] : []
         content {
           service_account_email = oidc_token.value.service_account_email
-          audience             = oidc_token.value.audience
+          audience              = oidc_token.value.audience
         }
       }
 
@@ -106,10 +106,10 @@ resource "google_pubsub_subscription" "subscriptions" {
   dynamic "bigquery_config" {
     for_each = each.value.bigquery_config != null ? [each.value.bigquery_config] : []
     content {
-      table                = bigquery_config.value.table
-      use_topic_schema     = bigquery_config.value.use_topic_schema
-      write_metadata       = bigquery_config.value.write_metadata
-      drop_unknown_fields  = bigquery_config.value.drop_unknown_fields
+      table               = bigquery_config.value.table
+      use_topic_schema    = bigquery_config.value.use_topic_schema
+      write_metadata      = bigquery_config.value.write_metadata
+      drop_unknown_fields = bigquery_config.value.drop_unknown_fields
     }
   }
 
@@ -159,7 +159,7 @@ resource "google_pubsub_lite_topic" "lite_topics" {
 
   retention_config {
     per_partition_bytes = each.value.retention_config.per_partition_bytes
-    period             = each.value.retention_config.period
+    period              = each.value.retention_config.period
   }
 
   reservation_config {

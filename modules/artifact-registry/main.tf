@@ -24,7 +24,7 @@ resource "google_artifact_registry_repository" "repositories" {
     for_each = each.value.maven_config != null ? [each.value.maven_config] : []
     content {
       allow_snapshot_overwrites = maven_config.value.allow_snapshot_overwrites
-      version_policy           = maven_config.value.version_policy
+      version_policy            = maven_config.value.version_policy
     }
   }
 
@@ -39,35 +39,35 @@ resource "google_artifact_registry_repository" "repositories" {
     for_each = each.value.remote_repository_config != null ? [each.value.remote_repository_config] : []
     content {
       description = remote_repository_config.value.description
-      
+
       dynamic "docker_repository" {
         for_each = remote_repository_config.value.docker_repository != null ? [remote_repository_config.value.docker_repository] : []
         content {
           public_repository = docker_repository.value.public_repository
         }
       }
-      
+
       dynamic "maven_repository" {
         for_each = remote_repository_config.value.maven_repository != null ? [remote_repository_config.value.maven_repository] : []
         content {
           public_repository = maven_repository.value.public_repository
         }
       }
-      
+
       dynamic "npm_repository" {
         for_each = remote_repository_config.value.npm_repository != null ? [remote_repository_config.value.npm_repository] : []
         content {
           public_repository = npm_repository.value.public_repository
         }
       }
-      
+
       dynamic "python_repository" {
         for_each = remote_repository_config.value.python_repository != null ? [remote_repository_config.value.python_repository] : []
         content {
           public_repository = python_repository.value.public_repository
         }
       }
-      
+
       dynamic "apt_repository" {
         for_each = remote_repository_config.value.apt_repository != null ? [remote_repository_config.value.apt_repository] : []
         content {
@@ -77,7 +77,7 @@ resource "google_artifact_registry_repository" "repositories" {
           }
         }
       }
-      
+
       dynamic "yum_repository" {
         for_each = remote_repository_config.value.yum_repository != null ? [remote_repository_config.value.yum_repository] : []
         content {

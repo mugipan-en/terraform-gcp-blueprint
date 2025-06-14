@@ -8,8 +8,8 @@ output "endpoints_services" {
       project      = v.project
       config_id    = v.config_id
       dns_address  = v.dns_address
-      endpoints = v.endpoints
-      apis = v.apis
+      endpoints    = v.endpoints
+      apis         = v.apis
     }
   }
 }
@@ -49,17 +49,17 @@ output "endpoints_summary" {
   description = "Summary of Endpoints deployment"
   value = {
     total_services = length(google_endpoints_service.endpoints_services)
-    
+
     services = {
       for k, v in google_endpoints_service.endpoints_services : k => {
-        name        = v.service_name
-        config_id   = v.config_id
-        dns_address = v.dns_address
-        api_count   = length(v.apis)
+        name           = v.service_name
+        config_id      = v.config_id
+        dns_address    = v.dns_address
+        api_count      = length(v.apis)
         endpoint_count = length(v.endpoints)
       }
     }
-    
+
     service_types = {
       openapi_services = length([
         for k, v in var.endpoints_services : k

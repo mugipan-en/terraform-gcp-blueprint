@@ -17,7 +17,7 @@ resource "google_dns_managed_zone" "zones" {
           network_url = networks.value.network_url
         }
       }
-      
+
       dynamic "gke_clusters" {
         for_each = private_visibility_config.value.gke_clusters
         content {
@@ -73,7 +73,7 @@ resource "google_dns_managed_zone" "zones" {
     content {
       state         = dnssec_config.value.state
       non_existence = dnssec_config.value.non_existence
-      
+
       dynamic "default_key_specs" {
         for_each = dnssec_config.value.default_key_specs
         content {
@@ -146,7 +146,7 @@ resource "google_dns_response_policy" "response_policies" {
   for_each = var.dns_response_policies
 
   response_policy_name = "${var.name_prefix}-${each.key}"
-  description         = each.value.description
+  description          = each.value.description
 
   # Networks
   dynamic "networks" {
@@ -170,9 +170,9 @@ resource "google_dns_response_policy_rule" "response_policy_rules" {
   for_each = var.dns_response_policy_rules
 
   response_policy = google_dns_response_policy.response_policies[each.value.response_policy_key].response_policy_name
-  rule_name      = each.key
-  dns_name       = each.value.dns_name
-  
+  rule_name       = each.key
+  dns_name        = each.value.dns_name
+
   # Local data
   dynamic "local_data" {
     for_each = each.value.local_data != null ? [each.value.local_data] : []

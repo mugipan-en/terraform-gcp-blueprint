@@ -8,13 +8,13 @@ variable "endpoints_services" {
   description = "Endpoints service configurations"
   type = map(object({
     service_name = string
-    
+
     # OpenAPI configuration (for REST APIs)
     openapi_config = optional(string)
-    
+
     # gRPC configuration
-    grpc_config    = optional(string)
-    protoc_output  = optional(string)
+    grpc_config   = optional(string)
+    protoc_output = optional(string)
   }))
   default = {}
 
@@ -36,7 +36,7 @@ variable "service_iam_bindings" {
     service_key = string
     role        = string
     members     = list(string)
-    
+
     condition = optional(object({
       title       = string
       description = optional(string)
@@ -53,7 +53,7 @@ variable "service_iam_members" {
     service_key = string
     role        = string
     member      = string
-    
+
     condition = optional(object({
       title       = string
       description = optional(string)
@@ -69,9 +69,9 @@ variable "consumer_iam_bindings" {
   type = map(object({
     service_key      = string
     consumer_project = string
-    role            = string
-    members         = list(string)
-    
+    role             = string
+    members          = list(string)
+
     condition = optional(object({
       title       = string
       description = optional(string)
@@ -87,9 +87,9 @@ variable "consumer_iam_members" {
   type = map(object({
     service_key      = string
     consumer_project = string
-    role            = string
-    member          = string
-    
+    role             = string
+    member           = string
+
     condition = optional(object({
       title       = string
       description = optional(string)

@@ -2,7 +2,7 @@
 # This is the main entry point for the GKE module
 # Individual components are organized in separate files:
 # - locals.tf: Local values and environment configuration
-# - service-account.tf: Service account and IAM management  
+# - service-account.tf: Service account and IAM management
 # - cluster.tf: GKE cluster configuration
 # - node-pools.tf: Node pool configurations
 

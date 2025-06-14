@@ -90,10 +90,10 @@ output "transfer_jobs" {
   description = "Information about Cloud Storage Transfer Service jobs"
   value = {
     for k, v in google_storage_transfer_job.transfer_jobs : k => {
-      name         = v.name
-      description  = v.description
-      status       = v.status
-      creation_time = v.creation_time
+      name                   = v.name
+      description            = v.description
+      status                 = v.status
+      creation_time          = v.creation_time
       last_modification_time = v.last_modification_time
     }
   }
@@ -148,14 +148,14 @@ output "usage_examples" {
         sync_folder  = "gsutil -m rsync -r /local/folder gs://${v.name}/folder/"
       }
     }
-    
+
     python_client = {
       for k, v in google_storage_bucket.buckets : k => {
-        bucket_name = v.name
+        bucket_name    = v.name
         upload_example = "from google.cloud import storage; client = storage.Client(); bucket = client.bucket('${v.name}'); blob = bucket.blob('filename'); blob.upload_from_filename('/path/to/file')"
       }
     }
-    
+
     api_endpoints = {
       for k, v in google_storage_bucket.buckets : k => {
         json_api = "https://storage.googleapis.com/storage/v1/b/${v.name}/o"

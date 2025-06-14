@@ -48,7 +48,7 @@ variable "pagerduty_notification_channels" {
 variable "cpu_alert_policies" {
   description = "CPU usage alert policies"
   type = map(object({
-    resource_type                           = string
+    resource_type                          = string
     threshold                              = number
     duration_seconds                       = number
     alignment_period_seconds               = number
@@ -64,7 +64,7 @@ variable "cpu_alert_policies" {
 variable "memory_alert_policies" {
   description = "Memory usage alert policies"
   type = map(object({
-    resource_type                           = string
+    resource_type                          = string
     threshold                              = number
     duration_seconds                       = number
     alignment_period_seconds               = number
@@ -80,7 +80,7 @@ variable "memory_alert_policies" {
 variable "disk_alert_policies" {
   description = "Disk usage alert policies"
   type = map(object({
-    resource_type                           = string
+    resource_type                          = string
     threshold                              = number
     duration_seconds                       = number
     alignment_period_seconds               = number
@@ -99,8 +99,8 @@ variable "custom_alert_policies" {
     combiner              = string
     enabled               = bool
     notification_channels = list(string)
-    labels               = map(string)
-    
+    labels                = map(string)
+
     conditions = list(object({
       display_name             = string
       filter                   = string
@@ -110,9 +110,9 @@ variable "custom_alert_policies" {
       alignment_period_seconds = number
       per_series_aligner       = string
       cross_series_reducer     = string
-      group_by_fields         = list(string)
+      group_by_fields          = list(string)
     }))
-    
+
     alert_strategy = object({
       auto_close_duration_seconds            = number
       notification_rate_limit_period_seconds = number
@@ -124,17 +124,17 @@ variable "custom_alert_policies" {
 variable "uptime_check_configs" {
   description = "Uptime check configurations"
   type = map(object({
-    timeout_seconds   = number
-    period_seconds    = number
-    path              = string
-    port              = number
+    timeout_seconds  = number
+    period_seconds   = number
+    path             = string
+    port             = number
     use_ssl          = bool
     validate_ssl     = bool
     resource_type    = string
     resource_labels  = map(string)
     selected_regions = list(string)
     headers          = map(string)
-    
+
     auth_info = object({
       username = string
       password = string
@@ -155,28 +155,28 @@ variable "log_based_metrics" {
   description = "Log-based metrics"
   type = map(object({
     filter = string
-    
+
     metric_descriptor = object({
       metric_kind = string
       value_type  = string
       unit        = string
-      
+
       labels = list(object({
         key         = string
         value_type  = string
         description = string
       }))
     })
-    
+
     label_extractors = map(string)
-    
+
     bucket_options = object({
       linear_buckets = object({
         num_finite_buckets = number
         width              = number
         offset             = number
       })
-      
+
       exponential_buckets = object({
         num_finite_buckets = number
         growth_factor      = number

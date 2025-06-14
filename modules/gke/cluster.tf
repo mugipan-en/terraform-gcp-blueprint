@@ -95,8 +95,8 @@ resource "google_container_cluster" "primary" {
         maximum       = 1000
       }
       auto_provisioning_defaults {
-        oauth_scopes = local.node_pool_defaults.oauth_scopes
-        service_account = local.service_account_email
+        oauth_scopes     = local.node_pool_defaults.oauth_scopes
+        service_account  = local.service_account_email
         min_cpu_platform = var.cost_optimization.auto_provisioning_defaults.min_cpu_platform
       }
     }
@@ -107,7 +107,7 @@ resource "google_container_cluster" "primary" {
     daily_maintenance_window {
       start_time = var.cluster_config.maintenance_start_time
     }
-    
+
     recurring_window {
       start_time = "${var.cluster_config.maintenance_start_time}:00"
       end_time   = var.cluster_config.maintenance_end_time
@@ -124,7 +124,7 @@ resource "google_container_cluster" "primary" {
   logging_config {
     enable_components = var.cluster_config.logging_components
   }
-  
+
   monitoring_config {
     enable_components = var.cluster_config.monitoring_components
   }
@@ -144,9 +144,9 @@ resource "google_container_cluster" "primary" {
   dynamic "resource_usage_export_config" {
     for_each = var.advanced_config.enable_resource_consumption_export ? [1] : []
     content {
-      enable_network_egress_metering = true
+      enable_network_egress_metering       = true
       enable_resource_consumption_metering = true
-      
+
       bigquery_destination {
         dataset_id = var.advanced_config.resource_consumption_bigquery_dataset
       }

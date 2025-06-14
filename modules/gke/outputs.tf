@@ -64,8 +64,8 @@ output "additional_node_pools" {
   description = "Information about additional node pools"
   value = {
     for k, v in google_container_node_pool.additional_pools : k => {
-      name                   = v.name
-      instance_group_urls    = v.instance_group_urls
+      name                        = v.name
+      instance_group_urls         = v.instance_group_urls
       managed_instance_group_urls = v.managed_instance_group_urls
     }
   }
@@ -92,9 +92,9 @@ output "kubectl_config" {
   value = {
     host                   = "https://${google_container_cluster.primary.endpoint}"
     cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth[0].cluster_ca_certificate)
-    cluster_name          = google_container_cluster.primary.name
-    project_id            = var.project_id
-    location              = google_container_cluster.primary.location
+    cluster_name           = google_container_cluster.primary.name
+    project_id             = var.project_id
+    location               = google_container_cluster.primary.location
   }
   sensitive = true
 }

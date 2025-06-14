@@ -2,20 +2,20 @@ output "redis_instances" {
   description = "Redis instances information"
   value = {
     for k, v in google_redis_instance.redis_instances : k => {
-      id                    = v.id
-      name                  = v.name
-      region                = v.region
-      tier                  = v.tier
-      memory_size_gb        = v.memory_size_gb
-      redis_version         = v.redis_version
-      host                  = v.host
-      port                  = v.port
-      current_location_id   = v.current_location_id
-      create_time          = v.create_time
-      state                = v.state
-      status_message       = v.status_message
-      auth_string          = v.auth_string
-      server_ca_certs      = v.server_ca_certs
+      id                       = v.id
+      name                     = v.name
+      region                   = v.region
+      tier                     = v.tier
+      memory_size_gb           = v.memory_size_gb
+      redis_version            = v.redis_version
+      host                     = v.host
+      port                     = v.port
+      current_location_id      = v.current_location_id
+      create_time              = v.create_time
+      state                    = v.state
+      status_message           = v.status_message
+      auth_string              = v.auth_string
+      server_ca_certs          = v.server_ca_certs
       persistence_iam_identity = v.persistence_iam_identity
     }
   }
@@ -46,15 +46,15 @@ output "memcached_instances" {
   description = "Memcached instances information"
   value = {
     for k, v in google_memcache_instance.memcached_instances : k => {
-      id                = v.id
-      name              = v.name
-      region            = v.region
-      node_count        = v.node_count
-      memcache_version  = v.memcache_version
+      id                 = v.id
+      name               = v.name
+      region             = v.region
+      node_count         = v.node_count
+      memcache_version   = v.memcache_version
       discovery_endpoint = v.discovery_endpoint
-      memcache_nodes    = v.memcache_nodes
-      create_time       = v.create_time
-      state             = v.state
+      memcache_nodes     = v.memcache_nodes
+      create_time        = v.create_time
+      state              = v.state
     }
   }
 }
@@ -64,7 +64,7 @@ output "memcached_connection_info" {
   value = {
     for k, v in google_memcache_instance.memcached_instances : k => {
       discovery_endpoint = v.discovery_endpoint
-      nodes = v.memcache_nodes
+      nodes              = v.memcache_nodes
     }
   }
 }

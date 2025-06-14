@@ -10,19 +10,19 @@ resource "google_compute_security_policy" "security_policies" {
     content {
       action   = rule.value.action
       priority = rule.value.priority
-      
+
       dynamic "match" {
         for_each = rule.value.match != null ? [rule.value.match] : []
         content {
           versioned_expr = match.value.versioned_expr
-          
+
           dynamic "config" {
             for_each = match.value.config != null ? [match.value.config] : []
             content {
               src_ip_ranges = config.value.src_ip_ranges
             }
           }
-          
+
           dynamic "expr" {
             for_each = match.value.expr != null ? [match.value.expr] : []
             content {
@@ -31,7 +31,7 @@ resource "google_compute_security_policy" "security_policies" {
           }
         }
       }
-      
+
       description = rule.value.description
     }
   }

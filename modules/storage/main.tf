@@ -5,7 +5,7 @@ resource "google_storage_bucket" "buckets" {
   name          = "${var.name_prefix}-${each.key}"
   location      = each.value.location
   storage_class = each.value.storage_class
-  
+
   # Force destroy for non-production environments
   force_destroy = each.value.force_destroy
 
@@ -30,10 +30,10 @@ resource "google_storage_bucket" "buckets" {
       condition {
         age                   = lifecycle_rule.value.condition.age
         created_before        = lifecycle_rule.value.condition.created_before
-        with_state           = lifecycle_rule.value.condition.with_state
+        with_state            = lifecycle_rule.value.condition.with_state
         matches_storage_class = lifecycle_rule.value.condition.matches_storage_class
-        matches_prefix       = lifecycle_rule.value.condition.matches_prefix
-        matches_suffix       = lifecycle_rule.value.condition.matches_suffix
+        matches_prefix        = lifecycle_rule.value.condition.matches_prefix
+        matches_suffix        = lifecycle_rule.value.condition.matches_suffix
       }
       action {
         type          = lifecycle_rule.value.action.type
@@ -92,11 +92,11 @@ resource "google_storage_bucket" "buckets" {
   dynamic "notification" {
     for_each = each.value.notification_configs
     content {
-      topic                = notification.value.topic
-      payload_format       = notification.value.payload_format
-      object_name_prefix   = notification.value.object_name_prefix
-      event_types         = notification.value.event_types
-      custom_attributes   = notification.value.custom_attributes
+      topic              = notification.value.topic
+      payload_format     = notification.value.payload_format
+      object_name_prefix = notification.value.object_name_prefix
+      event_types        = notification.value.event_types
+      custom_attributes  = notification.value.custom_attributes
     }
   }
 
@@ -128,11 +128,11 @@ resource "google_storage_bucket_object" "default_objects" {
   name   = each.value.name
   bucket = google_storage_bucket.buckets[each.value.bucket_name].name
   source = each.value.source
-  
+
   content_type     = each.value.content_type
   content_encoding = each.value.content_encoding
   content_language = each.value.content_language
-  
+
   cache_control = each.value.cache_control
   metadata      = each.value.metadata
 }
@@ -142,15 +142,15 @@ resource "google_storage_transfer_job" "transfer_jobs" {
   for_each = var.transfer_jobs
 
   description = each.value.description
-  
+
   transfer_spec {
     object_conditions {
       max_time_elapsed_since_last_modification = each.value.max_time_elapsed_since_last_modification
       min_time_elapsed_since_last_modification = each.value.min_time_elapsed_since_last_modification
-      include_prefixes                          = each.value.include_prefixes
-      exclude_prefixes                          = each.value.exclude_prefixes
+      include_prefixes                         = each.value.include_prefixes
+      exclude_prefixes                         = each.value.exclude_prefixes
     }
-    
+
     dynamic "gcs_data_source" {
       for_each = each.value.source_bucket != null ? [1] : []
       content {
@@ -158,26 +158,26 @@ resource "google_storage_transfer_job" "transfer_jobs" {
         path        = each.value.source_path
       }
     }
-    
+
     gcs_data_sink {
       bucket_name = google_storage_bucket.buckets[each.value.destination_bucket].name
       path        = each.value.destination_path
     }
-    
+
     transfer_options {
       overwrite_objects_already_existing_in_sink = each.value.overwrite_existing
       delete_objects_unique_in_sink              = each.value.delete_unique_in_sink
-      delete_objects_from_source_after_transfer = each.value.delete_from_source
+      delete_objects_from_source_after_transfer  = each.value.delete_from_source
     }
   }
-  
+
   schedule {
     schedule_start_date {
       year  = each.value.schedule_start_date.year
       month = each.value.schedule_start_date.month
       day   = each.value.schedule_start_date.day
     }
-    
+
     dynamic "schedule_end_date" {
       for_each = each.value.schedule_end_date != null ? [each.value.schedule_end_date] : []
       content {
@@ -186,16 +186,16 @@ resource "google_storage_transfer_job" "transfer_jobs" {
         day   = schedule_end_date.value.day
       }
     }
-    
+
     start_time_of_day {
       hours   = each.value.start_time_of_day.hours
       minutes = each.value.start_time_of_day.minutes
       seconds = each.value.start_time_of_day.seconds
       nanos   = each.value.start_time_of_day.nanos
     }
-    
+
     repeat_interval = each.value.repeat_interval
   }
-  
+
   status = each.value.enabled ? "ENABLED" : "DISABLED"
 }

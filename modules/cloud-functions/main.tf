@@ -8,7 +8,7 @@ resource "google_cloudfunctions2_function" "functions" {
   build_config {
     runtime     = each.value.runtime
     entry_point = each.value.entry_point
-    
+
     dynamic "source" {
       for_each = each.value.source_archive_bucket != null ? [1] : []
       content {
@@ -74,7 +74,7 @@ resource "google_cloudfunctions2_function" "functions" {
         mount_path = secret_volumes.value.mount_path
         project_id = secret_volumes.value.project_id
         secret     = secret_volumes.value.secret
-        
+
         dynamic "versions" {
           for_each = secret_volumes.value.versions
           content {
@@ -89,7 +89,7 @@ resource "google_cloudfunctions2_function" "functions" {
     dynamic "vpc_connector" {
       for_each = each.value.vpc_connector != null ? [each.value.vpc_connector] : []
       content {
-        connector = vpc_connector.value.connector
+        connector       = vpc_connector.value.connector
         egress_settings = vpc_connector.value.egress_settings
       }
     }
@@ -144,7 +144,7 @@ resource "google_cloudfunctions_function" "functions_gen1" {
     content {
       event_type = event_trigger.value.event_type
       resource   = event_trigger.value.resource
-      
+
       dynamic "failure_policy" {
         for_each = event_trigger.value.failure_policy != null ? [event_trigger.value.failure_policy] : []
         content {
@@ -162,17 +162,17 @@ resource "google_cloudfunctions_function" "functions_gen1" {
 
   # Configuration
   available_memory_mb   = each.value.available_memory_mb
-  timeout              = each.value.timeout
+  timeout               = each.value.timeout
   environment_variables = each.value.environment_variables
-  ingress_settings     = each.value.ingress_settings
+  ingress_settings      = each.value.ingress_settings
   service_account_email = each.value.service_account_email
-  max_instances        = each.value.max_instances
+  max_instances         = each.value.max_instances
 
   # VPC connector
   dynamic "vpc_connector" {
     for_each = each.value.vpc_connector != null ? [each.value.vpc_connector] : []
     content {
-      name          = vpc_connector.value.name
+      name            = vpc_connector.value.name
       egress_settings = vpc_connector.value.egress_settings
     }
   }
@@ -223,7 +223,7 @@ resource "google_cloud_scheduler_job" "scheduled_jobs" {
         for_each = http_target.value.oidc_token != null ? [http_target.value.oidc_token] : []
         content {
           service_account_email = oidc_token.value.service_account_email
-          audience             = oidc_token.value.audience
+          audience              = oidc_token.value.audience
         }
       }
 
@@ -231,7 +231,7 @@ resource "google_cloud_scheduler_job" "scheduled_jobs" {
         for_each = http_target.value.oauth_token != null ? [http_target.value.oauth_token] : []
         content {
           service_account_email = oauth_token.value.service_account_email
-          scope                = oauth_token.value.scope
+          scope                 = oauth_token.value.scope
         }
       }
     }

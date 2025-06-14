@@ -23,7 +23,7 @@ resource "google_cloud_tasks_queue" "queues" {
     for_each = each.value.rate_limits != null ? [each.value.rate_limits] : []
     content {
       max_dispatches_per_second = rate_limits.value.max_dispatches_per_second
-      max_burst_size           = rate_limits.value.max_burst_size
+      max_burst_size            = rate_limits.value.max_burst_size
       max_concurrent_dispatches = rate_limits.value.max_concurrent_dispatches
     }
   }
@@ -34,9 +34,9 @@ resource "google_cloud_tasks_queue" "queues" {
     content {
       max_attempts       = retry_config.value.max_attempts
       max_retry_duration = retry_config.value.max_retry_duration
-      max_backoff       = retry_config.value.max_backoff
-      min_backoff       = retry_config.value.min_backoff
-      max_doublings     = retry_config.value.max_doublings
+      max_backoff        = retry_config.value.max_backoff
+      min_backoff        = retry_config.value.min_backoff
+      max_doublings      = retry_config.value.max_doublings
     }
   }
 

@@ -6,10 +6,10 @@ output "services" {
       location = v.location
       id       = v.id
       url      = v.status[0].url
-      
-      traffic = v.status[0].traffic
+
+      traffic    = v.status[0].traffic
       conditions = v.status[0].conditions
-      
+
       latest_created_revision_name = v.status[0].latest_created_revision_name
       latest_ready_revision_name   = v.status[0].latest_ready_revision_name
       observed_generation          = v.status[0].observed_generation
@@ -53,7 +53,7 @@ output "vpc_connectors" {
   description = "VPC connectors information"
   value = {
     for k, v in google_vpc_access_connector.connector : k => {
-      name                = v.name
+      name               = v.name
       ip_cidr_range      = v.ip_cidr_range
       state              = v.state
       min_throughput     = v.min_throughput

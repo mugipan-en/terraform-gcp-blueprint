@@ -3,9 +3,9 @@ resource "google_bigquery_dataset" "datasets" {
   for_each = var.datasets
 
   dataset_id                  = "${var.name_prefix}_${each.key}"
-  friendly_name              = each.value.friendly_name
-  description                = each.value.description
-  location                   = each.value.location
+  friendly_name               = each.value.friendly_name
+  description                 = each.value.description
+  location                    = each.value.location
   default_table_expiration_ms = each.value.default_table_expiration_ms
   delete_contents_on_destroy  = each.value.delete_contents_on_destroy
 
@@ -14,12 +14,12 @@ resource "google_bigquery_dataset" "datasets" {
   dynamic "access" {
     for_each = each.value.access_rules
     content {
-      role          = access.value.role
-      user_by_email = access.value.user_by_email
+      role           = access.value.role
+      user_by_email  = access.value.user_by_email
       group_by_email = access.value.group_by_email
-      domain        = access.value.domain
-      special_group = access.value.special_group
-      iam_member    = access.value.iam_member
+      domain         = access.value.domain
+      special_group  = access.value.special_group
+      iam_member     = access.value.iam_member
     }
   }
 }
@@ -29,10 +29,10 @@ resource "google_bigquery_table" "tables" {
   for_each = var.tables
 
   dataset_id          = google_bigquery_dataset.datasets[each.value.dataset_key].dataset_id
-  table_id           = each.key
-  friendly_name      = each.value.friendly_name
-  description        = each.value.description
-  expiration_time    = each.value.expiration_time
+  table_id            = each.key
+  friendly_name       = each.value.friendly_name
+  description         = each.value.description
+  expiration_time     = each.value.expiration_time
   deletion_protection = each.value.deletion_protection
 
   dynamic "time_partitioning" {
@@ -40,7 +40,7 @@ resource "google_bigquery_table" "tables" {
     content {
       type                     = time_partitioning.value.type
       field                    = time_partitioning.value.field
-      expiration_ms           = time_partitioning.value.expiration_ms
+      expiration_ms            = time_partitioning.value.expiration_ms
       require_partition_filter = time_partitioning.value.require_partition_filter
     }
   }
@@ -105,21 +105,21 @@ resource "google_bigquery_routine" "routines" {
 resource "google_bigquery_data_transfer_config" "transfer_configs" {
   for_each = var.data_transfer_configs
 
-  display_name   = "${var.name_prefix}-${each.key}"
-  location       = each.value.location
-  data_source_id = each.value.data_source_id
+  display_name           = "${var.name_prefix}-${each.key}"
+  location               = each.value.location
+  data_source_id         = each.value.data_source_id
   destination_dataset_id = google_bigquery_dataset.datasets[each.value.dataset_key].dataset_id
-  
-  schedule                = each.value.schedule
+
+  schedule = each.value.schedule
   schedule_options {
     disable_auto_scheduling = each.value.disable_auto_scheduling
-    start_time             = each.value.start_time
-    end_time               = each.value.end_time
+    start_time              = each.value.start_time
+    end_time                = each.value.end_time
   }
 
   params = each.value.params
 
-  service_account_name = each.value.service_account_name
+  service_account_name      = each.value.service_account_name
   notification_pubsub_topic = each.value.notification_pubsub_topic
 
   email_preferences {

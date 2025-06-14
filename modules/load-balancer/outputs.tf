@@ -29,11 +29,11 @@ output "ssl_certificates" {
   description = "SSL certificate information"
   value = {
     for k, v in google_compute_managed_ssl_certificate.ssl_certs : k => {
-      name         = v.name
-      domains      = v.managed[0].domains
-      status       = v.managed[0].status
+      name          = v.name
+      domains       = v.managed[0].domains
+      status        = v.managed[0].status
       domain_status = v.managed[0].domain_status
-      self_link    = v.self_link
+      self_link     = v.self_link
     }
   }
 }
@@ -43,13 +43,13 @@ output "backend_services" {
   description = "Backend service information"
   value = {
     for k, v in google_compute_backend_service.global_backend_services : k => {
-      name           = v.name
-      protocol       = v.protocol
-      timeout_sec    = v.timeout_sec
-      enable_cdn     = v.enable_cdn
-      self_link      = v.self_link
-      generated_id   = v.generated_id
-      fingerprint    = v.fingerprint
+      name         = v.name
+      protocol     = v.protocol
+      timeout_sec  = v.timeout_sec
+      enable_cdn   = v.enable_cdn
+      self_link    = v.self_link
+      generated_id = v.generated_id
+      fingerprint  = v.fingerprint
     }
   }
 }
@@ -64,7 +64,7 @@ output "health_checks" {
       timeout_sec         = v.timeout_sec
       healthy_threshold   = v.healthy_threshold
       unhealthy_threshold = v.unhealthy_threshold
-      self_link          = v.self_link
+      self_link           = v.self_link
     }
   }
 }
@@ -74,11 +74,11 @@ output "url_maps" {
   description = "URL map information"
   value = {
     for k, v in google_compute_url_map.url_maps : k => {
-      name          = v.name
+      name            = v.name
       default_service = v.default_service
-      fingerprint   = v.fingerprint
-      self_link     = v.self_link
-      map_id        = v.map_id
+      fingerprint     = v.fingerprint
+      self_link       = v.self_link
+      map_id          = v.map_id
     }
   }
 }
@@ -115,11 +115,11 @@ output "https_forwarding_rules" {
   value = {
     for k, v in google_compute_global_forwarding_rule.https_forwarding_rule : k => {
       name                  = v.name
-      target               = v.target
-      port_range           = v.port_range
-      ip_address           = v.ip_address
+      target                = v.target
+      port_range            = v.port_range
+      ip_address            = v.ip_address
       load_balancing_scheme = v.load_balancing_scheme
-      self_link            = v.self_link
+      self_link             = v.self_link
     }
   }
 }
@@ -129,11 +129,11 @@ output "http_forwarding_rules" {
   value = {
     for k, v in google_compute_global_forwarding_rule.http_forwarding_rule : k => {
       name                  = v.name
-      target               = v.target
-      port_range           = v.port_range
-      ip_address           = v.ip_address
+      target                = v.target
+      port_range            = v.port_range
+      ip_address            = v.ip_address
       load_balancing_scheme = v.load_balancing_scheme
-      self_link            = v.self_link
+      self_link             = v.self_link
     }
   }
 }
@@ -143,13 +143,13 @@ output "ssl_policies" {
   description = "SSL policy information"
   value = {
     for k, v in google_compute_ssl_policy.ssl_policies : k => {
-      name            = v.name
-      profile         = v.profile
-      min_tls_version = v.min_tls_version
-      custom_features = v.custom_features
+      name             = v.name
+      profile          = v.profile
+      min_tls_version  = v.min_tls_version
+      custom_features  = v.custom_features
       enabled_features = v.enabled_features
-      fingerprint     = v.fingerprint
-      self_link       = v.self_link
+      fingerprint      = v.fingerprint
+      self_link        = v.self_link
     }
   }
 }
@@ -163,7 +163,7 @@ output "security_policies" {
       description = v.description
       fingerprint = v.fingerprint
       self_link   = v.self_link
-      
+
       # Security policy rules
       rules = [
         for rule in v.rule : {
@@ -200,10 +200,10 @@ output "load_balancer_summary" {
         backend_services = v.default_backend_service
       }
     }
-    
-    total_certificates    = length(google_compute_managed_ssl_certificate.ssl_certs)
-    total_health_checks   = length(google_compute_health_check.health_checks)
-    total_backend_services = length(google_compute_backend_service.global_backend_services)
+
+    total_certificates      = length(google_compute_managed_ssl_certificate.ssl_certs)
+    total_health_checks     = length(google_compute_health_check.health_checks)
+    total_backend_services  = length(google_compute_backend_service.global_backend_services)
     total_security_policies = length(google_compute_security_policy.security_policies)
   }
 }

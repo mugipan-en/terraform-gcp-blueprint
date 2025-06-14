@@ -2,12 +2,12 @@
 resource "google_app_engine_standard_app_version" "standard_versions" {
   for_each = var.standard_services
 
-  project     = var.project_id
-  service     = each.value.service_name
-  version_id  = each.value.version_id
-  runtime     = each.value.runtime
-  threadsafe  = each.value.threadsafe
-  
+  project    = var.project_id
+  service    = each.value.service_name
+  version_id = each.value.version_id
+  runtime    = each.value.runtime
+  threadsafe = each.value.threadsafe
+
   # Deployment configuration
   dynamic "deployment" {
     for_each = each.value.deployment != null ? [each.value.deployment] : []
@@ -19,7 +19,7 @@ resource "google_app_engine_standard_app_version" "standard_versions" {
           files_count = zip.value.files_count
         }
       }
-      
+
       dynamic "files" {
         for_each = deployment.value.files != null ? deployment.value.files : {}
         content {
@@ -50,11 +50,11 @@ resource "google_app_engine_standard_app_version" "standard_versions" {
     for_each = each.value.automatic_scaling != null ? [each.value.automatic_scaling] : []
     content {
       max_concurrent_requests = automatic_scaling.value.max_concurrent_requests
-      max_idle_instances     = automatic_scaling.value.max_idle_instances
-      max_pending_latency    = automatic_scaling.value.max_pending_latency
-      min_idle_instances     = automatic_scaling.value.min_idle_instances
-      min_pending_latency    = automatic_scaling.value.min_pending_latency
-      
+      max_idle_instances      = automatic_scaling.value.max_idle_instances
+      max_pending_latency     = automatic_scaling.value.max_pending_latency
+      min_idle_instances      = automatic_scaling.value.min_idle_instances
+      min_pending_latency     = automatic_scaling.value.min_pending_latency
+
       dynamic "standard_scheduler_settings" {
         for_each = automatic_scaling.value.standard_scheduler_settings != null ? [automatic_scaling.value.standard_scheduler_settings] : []
         content {
@@ -97,18 +97,18 @@ resource "google_app_engine_standard_app_version" "standard_versions" {
     for_each = each.value.handlers != null ? each.value.handlers : []
     content {
       url_regex                   = handlers.value.url_regex
-      security_level             = handlers.value.security_level
-      login                      = handlers.value.login
-      auth_fail_action           = handlers.value.auth_fail_action
+      security_level              = handlers.value.security_level
+      login                       = handlers.value.login
+      auth_fail_action            = handlers.value.auth_fail_action
       redirect_http_response_code = handlers.value.redirect_http_response_code
-      
+
       dynamic "script" {
         for_each = handlers.value.script != null ? [handlers.value.script] : []
         content {
           script_path = script.value.script_path
         }
       }
-      
+
       dynamic "static_files" {
         for_each = handlers.value.static_files != null ? [handlers.value.static_files] : []
         content {
@@ -136,7 +136,7 @@ resource "google_app_engine_standard_app_version" "standard_versions" {
   inbound_services = each.value.inbound_services
 
   # No traffic on deploy
-  noop_on_destroy = each.value.noop_on_destroy
+  noop_on_destroy           = each.value.noop_on_destroy
   delete_service_on_destroy = each.value.delete_service_on_destroy
 
   depends_on = [google_app_engine_application.app]
@@ -161,7 +161,7 @@ resource "google_app_engine_flexible_app_version" "flexible_versions" {
           image = container.value.image
         }
       }
-      
+
       dynamic "zip" {
         for_each = deployment.value.zip != null ? [deployment.value.zip] : []
         content {
@@ -169,7 +169,7 @@ resource "google_app_engine_flexible_app_version" "flexible_versions" {
           files_count = zip.value.files_count
         }
       }
-      
+
       dynamic "files" {
         for_each = deployment.value.files != null ? deployment.value.files : {}
         content {
@@ -207,13 +207,13 @@ resource "google_app_engine_flexible_app_version" "flexible_versions" {
     content {
       cool_down_period        = automatic_scaling.value.cool_down_period
       max_concurrent_requests = automatic_scaling.value.max_concurrent_requests
-      max_idle_instances     = automatic_scaling.value.max_idle_instances
-      max_pending_latency    = automatic_scaling.value.max_pending_latency
-      max_total_instances    = automatic_scaling.value.max_total_instances
-      min_idle_instances     = automatic_scaling.value.min_idle_instances
-      min_pending_latency    = automatic_scaling.value.min_pending_latency
-      min_total_instances    = automatic_scaling.value.min_total_instances
-      
+      max_idle_instances      = automatic_scaling.value.max_idle_instances
+      max_pending_latency     = automatic_scaling.value.max_pending_latency
+      max_total_instances     = automatic_scaling.value.max_total_instances
+      min_idle_instances      = automatic_scaling.value.min_idle_instances
+      min_pending_latency     = automatic_scaling.value.min_pending_latency
+      min_total_instances     = automatic_scaling.value.min_total_instances
+
       dynamic "cpu_utilization" {
         for_each = automatic_scaling.value.cpu_utilization != null ? [automatic_scaling.value.cpu_utilization] : []
         content {
@@ -221,7 +221,7 @@ resource "google_app_engine_flexible_app_version" "flexible_versions" {
           target_utilization        = cpu_utilization.value.target_utilization
         }
       }
-      
+
       dynamic "disk_utilization" {
         for_each = automatic_scaling.value.disk_utilization != null ? [automatic_scaling.value.disk_utilization] : []
         content {
@@ -231,7 +231,7 @@ resource "google_app_engine_flexible_app_version" "flexible_versions" {
           target_write_ops_per_second   = disk_utilization.value.target_write_ops_per_second
         }
       }
-      
+
       dynamic "network_utilization" {
         for_each = automatic_scaling.value.network_utilization != null ? [automatic_scaling.value.network_utilization] : []
         content {
@@ -241,11 +241,11 @@ resource "google_app_engine_flexible_app_version" "flexible_versions" {
           target_sent_packets_per_second     = network_utilization.value.target_sent_packets_per_second
         }
       }
-      
+
       dynamic "request_utilization" {
         for_each = automatic_scaling.value.request_utilization != null ? [automatic_scaling.value.request_utilization] : []
         content {
-          target_concurrent_requests     = request_utilization.value.target_concurrent_requests
+          target_concurrent_requests      = request_utilization.value.target_concurrent_requests
           target_request_count_per_second = request_utilization.value.target_request_count_per_second
         }
       }
@@ -275,7 +275,7 @@ resource "google_app_engine_flexible_app_version" "flexible_versions" {
       cpu       = resources.value.cpu
       memory_gb = resources.value.memory_gb
       disk_gb   = resources.value.disk_gb
-      
+
       dynamic "volumes" {
         for_each = resources.value.volumes != null ? resources.value.volumes : []
         content {
@@ -295,11 +295,12 @@ resource "google_app_engine_flexible_app_version" "flexible_versions" {
       subnetwork       = network.value.subnetwork
       session_affinity = network.value.session_affinity
       instance_tag     = network.value.instance_tag
-      
+
       dynamic "forwarded_ports" {
         for_each = network.value.forwarded_ports != null ? network.value.forwarded_ports : []
         content {
-          forwarded_ports.value
+          name = forwarded_ports.value.name
+          port = forwarded_ports.value.port
         }
       }
     }
@@ -343,7 +344,7 @@ resource "google_app_engine_flexible_app_version" "flexible_versions" {
   inbound_services = each.value.inbound_services
 
   # No traffic on deploy
-  noop_on_destroy = each.value.noop_on_destroy
+  noop_on_destroy           = each.value.noop_on_destroy
   delete_service_on_destroy = each.value.delete_service_on_destroy
 
   depends_on = [google_app_engine_application.app]

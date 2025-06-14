@@ -7,7 +7,7 @@ resource "google_container_node_pool" "pools" {
   name     = "${local.cluster_config.name}-${each.key}"
   location = local.cluster_config.location
   cluster  = google_container_cluster.primary.name
-  
+
   initial_node_count = each.value.initial_node_count
 
   # Autoscaling
@@ -68,12 +68,12 @@ resource "google_container_node_pool" "pools" {
 
     # Network tags
     tags = ["gke-node", "${local.cluster_config.name}-node"]
-    
+
     # Workload metadata config
     workload_metadata_config {
       mode = "GKE_METADATA"
     }
-    
+
     # Local SSD configuration
     dynamic "local_ssd_config" {
       for_each = each.value.local_ssd_count > 0 ? [1] : []
@@ -81,7 +81,7 @@ resource "google_container_node_pool" "pools" {
         count = each.value.local_ssd_count
       }
     }
-    
+
     # Guest accelerator (GPU) configuration
     dynamic "guest_accelerator" {
       for_each = each.value.gpu_type != null ? [1] : []
@@ -96,13 +96,13 @@ resource "google_container_node_pool" "pools" {
   upgrade_settings {
     max_surge       = each.value.max_surge
     max_unavailable = each.value.max_unavailable
-    
+
     dynamic "blue_green_settings" {
       for_each = each.value.blue_green_update ? [1] : []
       content {
         standard_rollout_policy {
           batch_percentage    = 0.2
-          batch_node_count   = 1
+          batch_node_count    = 1
           batch_soak_duration = "10s"
         }
       }
@@ -114,7 +114,7 @@ resource "google_container_node_pool" "pools" {
     update = "30m"
     delete = "30m"
   }
-  
+
   depends_on = [
     google_container_cluster.primary
   ]

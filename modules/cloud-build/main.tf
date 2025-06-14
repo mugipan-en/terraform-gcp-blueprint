@@ -23,16 +23,16 @@ resource "google_cloudbuild_trigger" "triggers" {
     content {
       owner = github.value.owner
       name  = github.value.name
-      
+
       dynamic "push" {
         for_each = github.value.push != null ? [github.value.push] : []
         content {
-          branch          = push.value.branch
-          tag             = push.value.tag
-          invert_regex    = push.value.invert_regex
+          branch       = push.value.branch
+          tag          = push.value.tag
+          invert_regex = push.value.invert_regex
         }
       }
-      
+
       dynamic "pull_request" {
         for_each = github.value.pull_request != null ? [github.value.pull_request] : []
         content {
@@ -75,16 +75,16 @@ resource "google_cloudbuild_trigger" "triggers" {
           wait_for   = step.value.wait_for
         }
       }
-      
-      timeout = build.value.timeout
-      images  = build.value.images
+
+      timeout       = build.value.timeout
+      images        = build.value.images
       substitutions = build.value.substitutions
-      
+
       dynamic "artifacts" {
         for_each = build.value.artifacts != null ? [build.value.artifacts] : []
         content {
           images = artifacts.value.images
-          
+
           dynamic "objects" {
             for_each = artifacts.value.objects != null ? [artifacts.value.objects] : []
             content {
@@ -94,32 +94,34 @@ resource "google_cloudbuild_trigger" "triggers" {
           }
         }
       }
-      
+
       dynamic "options" {
         for_each = build.value.options != null ? [build.value.options] : []
         content {
-          disk_size_gb                = options.value.disk_size_gb
-          dynamic_substitutions       = options.value.dynamic_substitutions
-          env                        = options.value.env
-          log_streaming_option       = options.value.log_streaming_option
-          logging                    = options.value.logging
-          machine_type               = options.value.machine_type
-          requested_verify_option    = options.value.requested_verify_option
-          secret_env                 = options.value.secret_env
-          source_provenance_hash     = options.value.source_provenance_hash
-          substitution_option        = options.value.substitution_option
-          worker_pool                = options.value.worker_pool
+          disk_size_gb            = options.value.disk_size_gb
+          dynamic_substitutions   = options.value.dynamic_substitutions
+          env                     = options.value.env
+          log_streaming_option    = options.value.log_streaming_option
+          logging                 = options.value.logging
+          machine_type            = options.value.machine_type
+          requested_verify_option = options.value.requested_verify_option
+          secret_env              = options.value.secret_env
+          source_provenance_hash  = options.value.source_provenance_hash
+          substitution_option     = options.value.substitution_option
+          worker_pool             = options.value.worker_pool
         }
       }
     }
   }
 
   filename = each.value.filename
-  
+
   dynamic "substitutions" {
     for_each = each.value.substitutions != null ? [each.value.substitutions] : []
     content {
-      substitutions.value
+      substitutions = {
+        for k, v in substitutions.value : k => v
+      }
     }
   }
 

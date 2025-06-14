@@ -2,10 +2,10 @@
 resource "google_compute_health_check" "health_checks" {
   for_each = var.health_checks
 
-  name               = "${var.name_prefix}-${each.key}-hc"
-  check_interval_sec = each.value.check_interval_sec
-  timeout_sec        = each.value.timeout_sec
-  healthy_threshold  = each.value.healthy_threshold
+  name                = "${var.name_prefix}-${each.key}-hc"
+  check_interval_sec  = each.value.check_interval_sec
+  timeout_sec         = each.value.timeout_sec
+  healthy_threshold   = each.value.healthy_threshold
   unhealthy_threshold = each.value.unhealthy_threshold
 
   dynamic "http_health_check" {

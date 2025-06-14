@@ -8,7 +8,7 @@ resource "google_app_engine_service_split_traffic" "traffic_splits" {
   migrate_traffic = each.value.migrate_traffic
 
   split {
-    shard_by = each.value.split.shard_by
+    shard_by    = each.value.split.shard_by
     allocations = each.value.split.allocations
   }
 

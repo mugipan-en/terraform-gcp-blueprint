@@ -2,14 +2,14 @@
 resource "google_compute_backend_service" "global_backend_services" {
   for_each = var.global_backend_services
 
-  name                  = "${var.name_prefix}-${each.key}-backend"
-  protocol              = each.value.protocol
-  timeout_sec           = each.value.timeout_sec
-  enable_cdn           = each.value.enable_cdn
-  compression_mode     = each.value.compression_mode
-  session_affinity     = each.value.session_affinity
-  locality_lb_policy   = each.value.locality_lb_policy
-  
+  name               = "${var.name_prefix}-${each.key}-backend"
+  protocol           = each.value.protocol
+  timeout_sec        = each.value.timeout_sec
+  enable_cdn         = each.value.enable_cdn
+  compression_mode   = each.value.compression_mode
+  session_affinity   = each.value.session_affinity
+  locality_lb_policy = each.value.locality_lb_policy
+
   # Health check
   health_checks = [google_compute_health_check.health_checks[each.value.health_check_key].id]
 
@@ -17,17 +17,17 @@ resource "google_compute_backend_service" "global_backend_services" {
   dynamic "backend" {
     for_each = each.value.backends
     content {
-      group           = backend.value.group
-      balancing_mode  = backend.value.balancing_mode
-      capacity_scaler = backend.value.capacity_scaler
-      description     = backend.value.description
-      max_connections = backend.value.max_connections
+      group                        = backend.value.group
+      balancing_mode               = backend.value.balancing_mode
+      capacity_scaler              = backend.value.capacity_scaler
+      description                  = backend.value.description
+      max_connections              = backend.value.max_connections
       max_connections_per_instance = backend.value.max_connections_per_instance
       max_connections_per_endpoint = backend.value.max_connections_per_endpoint
-      max_rate        = backend.value.max_rate
-      max_rate_per_instance = backend.value.max_rate_per_instance
-      max_rate_per_endpoint = backend.value.max_rate_per_endpoint
-      max_utilization = backend.value.max_utilization
+      max_rate                     = backend.value.max_rate
+      max_rate_per_instance        = backend.value.max_rate_per_instance
+      max_rate_per_endpoint        = backend.value.max_rate_per_endpoint
+      max_utilization              = backend.value.max_utilization
     }
   }
 

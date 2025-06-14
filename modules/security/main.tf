@@ -59,7 +59,7 @@ resource "google_secret_manager_secret" "secrets" {
   for_each = var.secrets
 
   secret_id = "${var.name_prefix}-${each.key}"
-  
+
   labels = merge(var.tags, each.value.labels)
 
   replication {
@@ -80,7 +80,7 @@ resource "google_secret_manager_secret" "secrets" {
         }
       }
     }
-    
+
     dynamic "automatic" {
       for_each = each.value.replication.automatic != null ? [each.value.replication.automatic] : []
       content {
@@ -136,10 +136,10 @@ resource "google_kms_crypto_key" "crypto_keys" {
 
   name     = each.key
   key_ring = google_kms_key_ring.key_rings[each.value.key_ring].id
-  
-  purpose          = each.value.purpose
-  rotation_period  = each.value.rotation_period
-  
+
+  purpose         = each.value.purpose
+  rotation_period = each.value.rotation_period
+
   dynamic "version_template" {
     for_each = each.value.version_template != null ? [each.value.version_template] : []
     content {
@@ -147,7 +147,7 @@ resource "google_kms_crypto_key" "crypto_keys" {
       protection_level = version_template.value.protection_level
     }
   }
-  
+
   labels = merge(var.tags, each.value.labels)
 
   lifecycle {

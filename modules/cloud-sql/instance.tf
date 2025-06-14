@@ -2,17 +2,17 @@
 
 # Cloud SQL Instance
 resource "google_sql_database_instance" "main" {
-  name             = local.instance_name
-  database_version = local.final_database_config.database_version
-  region           = var.region
+  name                = local.instance_name
+  database_version    = local.final_database_config.database_version
+  region              = var.region
   deletion_protection = local.final_database_config.deletion_protection
 
   settings {
-    tier              = local.final_database_config.instance_type
-    availability_type = local.final_database_config.availability_type
-    disk_type         = local.final_database_config.disk_type
-    disk_size         = local.final_database_config.disk_size_gb
-    disk_autoresize   = local.final_database_config.disk_autoresize
+    tier                  = local.final_database_config.instance_type
+    availability_type     = local.final_database_config.availability_type
+    disk_type             = local.final_database_config.disk_type
+    disk_size             = local.final_database_config.disk_size_gb
+    disk_autoresize       = local.final_database_config.disk_autoresize
     disk_autoresize_limit = local.final_database_config.disk_autoresize_limit
 
     # Backup configuration
@@ -22,8 +22,8 @@ resource "google_sql_database_instance" "main" {
       location                       = local.final_backup_config.location
       point_in_time_recovery_enabled = local.final_backup_config.point_in_time_recovery_enabled
       transaction_log_retention_days = local.final_backup_config.transaction_log_retention_days
-      binary_log_enabled            = local.final_backup_config.binary_log_enabled
-      
+      binary_log_enabled             = local.final_backup_config.binary_log_enabled
+
       backup_retention_settings {
         retained_backups = local.final_backup_config.retained_backups
         retention_unit   = "COUNT"
@@ -42,7 +42,7 @@ resource "google_sql_database_instance" "main" {
       ipv4_enabled                                  = local.final_database_config.ipv4_enabled
       private_network                               = local.final_database_config.network
       require_ssl                                   = local.final_database_config.require_ssl
-      allocated_ip_range                           = var.database_config.allocated_ip_range
+      allocated_ip_range                            = var.database_config.allocated_ip_range
       enable_private_path_for_google_cloud_services = true
 
       dynamic "authorized_networks" {
@@ -92,11 +92,11 @@ resource "google_sql_database_instance" "main" {
 resource "google_sql_database_instance" "read_replicas" {
   for_each = var.high_availability_config.read_replicas
 
-  name               = "${local.instance_name}-${each.key}"
+  name                 = "${local.instance_name}-${each.key}"
   master_instance_name = google_sql_database_instance.main.name
-  region             = each.value.region
-  database_version   = local.final_database_config.database_version
-  deletion_protection = local.final_database_config.deletion_protection
+  region               = each.value.region
+  database_version     = local.final_database_config.database_version
+  deletion_protection  = local.final_database_config.deletion_protection
 
   replica_configuration {
     failover_target = each.value.failover_target
@@ -104,7 +104,7 @@ resource "google_sql_database_instance" "read_replicas" {
 
   settings {
     tier              = each.value.tier != null ? each.value.tier : local.final_database_config.instance_type
-    availability_type = "ZONAL"  # Replicas are always zonal
+    availability_type = "ZONAL" # Replicas are always zonal
     disk_autoresize   = each.value.disk_autoresize
 
     # IP configuration (inherits from master)
@@ -117,7 +117,7 @@ resource "google_sql_database_instance" "read_replicas" {
 
     # User labels
     user_labels = merge(local.common_labels, {
-      role = "read-replica"
+      role       = "read-replica"
       replica_of = google_sql_database_instance.main.name
     })
   }

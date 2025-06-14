@@ -21,27 +21,27 @@ variable "services" {
     # Basic Service Configuration
     location = optional(string)
     image    = string
-    
+
     # Scaling Configuration
     min_scale             = optional(number, 0)
     max_scale             = optional(number, 100)
     container_concurrency = optional(number, 80)
-    
+
     # Resource Configuration
     cpu_limit      = optional(string, "1000m")
     memory_limit   = optional(string, "512Mi")
     cpu_request    = optional(string, "1000m")
     memory_request = optional(string, "512Mi")
-    
+
     # Runtime Configuration
-    timeout_seconds           = optional(number, 300)
-    execution_environment     = optional(string, "EXECUTION_ENVIRONMENT_GEN2")
-    cpu_throttling           = optional(bool, true)
+    timeout_seconds            = optional(number, 300)
+    execution_environment      = optional(string, "EXECUTION_ENVIRONMENT_GEN2")
+    cpu_throttling             = optional(bool, true)
     autogenerate_revision_name = optional(bool, true)
-    
+
     # Service Account
     service_account_email = optional(string)
-    
+
     # Environment Variables
     env_vars = optional(map(string), {})
     env_vars_from_secrets = optional(list(object({
@@ -49,24 +49,24 @@ variable "services" {
       secret_name = string
       key         = string
     })), [])
-    
+
     # Port Configuration
     ports = optional(list(object({
       name           = optional(string, "http1")
       protocol       = optional(string, "TCP")
       container_port = optional(number, 8080)
-    })), [{
+      })), [{
       name           = "http1"
       protocol       = "TCP"
       container_port = 8080
     }])
-    
+
     # Volume Configuration
     volume_mounts = optional(list(object({
       name       = string
       mount_path = string
     })), [])
-    
+
     volumes = optional(list(object({
       name = string
       secret = optional(object({
@@ -88,13 +88,13 @@ variable "services" {
         })), [])
       }))
     })), [])
-    
+
     # Health Checks
     startup_probe = optional(object({
       initial_delay_seconds = optional(number, 0)
-      timeout_seconds      = optional(number, 240)
-      period_seconds       = optional(number, 240)
-      failure_threshold    = optional(number, 1)
+      timeout_seconds       = optional(number, 240)
+      period_seconds        = optional(number, 240)
+      failure_threshold     = optional(number, 1)
       http_get = optional(object({
         path = optional(string, "/")
         port = optional(number, 8080)
@@ -104,12 +104,12 @@ variable "services" {
         })), [])
       }))
     }))
-    
+
     liveness_probe = optional(object({
       initial_delay_seconds = optional(number, 0)
-      timeout_seconds      = optional(number, 240)
-      period_seconds       = optional(number, 240)
-      failure_threshold    = optional(number, 3)
+      timeout_seconds       = optional(number, 240)
+      period_seconds        = optional(number, 240)
+      failure_threshold     = optional(number, 3)
       http_get = optional(object({
         path = optional(string, "/")
         port = optional(number, 8080)
@@ -119,24 +119,24 @@ variable "services" {
         })), [])
       }))
     }))
-    
+
     # Traffic Management
     traffic_allocation = optional(list(object({
       percent         = number
       latest_revision = optional(bool, true)
       revision_name   = optional(string)
       tag             = optional(string)
-    })), [{
-      percent = 100
+      })), [{
+      percent         = 100
       latest_revision = true
     }])
-    
+
     # Metadata
     annotations = optional(map(string), {})
     labels      = optional(map(string), {})
   }))
   default = {}
-  
+
   validation {
     condition = alltrue([
       for name, service in var.services :
@@ -144,7 +144,7 @@ variable "services" {
     ])
     error_message = "min_scale must be >= 0 and <= max_scale for all services."
   }
-  
+
   validation {
     condition = alltrue([
       for name, service in var.services :
@@ -163,14 +163,14 @@ variable "iam_config" {
       role    = string
       members = list(string)
     })), {})
-    
+
     # Service-specific IAM bindings
     service_bindings = optional(map(object({
       service_key = string
       role        = string
       members     = list(string)
     })), {})
-    
+
     # Public access settings
     allow_unauthenticated = optional(bool, false)
   })
@@ -184,20 +184,20 @@ variable "domain_config" {
     mappings = optional(map(object({
       service_key = string
       domain_name = string
-      
+
       # SSL settings
       force_override = optional(bool, false)
-      
+
       # Certificate configuration
       certificate_mode = optional(string, "AUTOMATIC")
-      
+
       # Metadata
       labels      = optional(map(string), {})
       annotations = optional(map(string), {})
     })), {})
   })
   default = {}
-  
+
   validation {
     condition = alltrue([
       for name, mapping in var.domain_config.mappings :
@@ -214,26 +214,26 @@ variable "vpc_connector_config" {
     connectors = optional(map(object({
       # Network Configuration
       ip_cidr_range = string
-      network      = string
-      subnet_name  = optional(string)
-      
+      network       = string
+      subnet_name   = optional(string)
+
       # Throughput Configuration
       min_throughput = optional(number, 200)
       max_throughput = optional(number, 300)
-      
+
       # Instance Configuration
       min_instances = optional(number, 2)
       max_instances = optional(number, 10)
-      
+
       # Machine type
       machine_type = optional(string, "e2-micro")
-      
+
       # Labels
       labels = optional(map(string), {})
     })), {})
   })
   default = {}
-  
+
   validation {
     condition = alltrue([
       for name, connector in var.vpc_connector_config.connectors :
@@ -241,7 +241,7 @@ variable "vpc_connector_config" {
     ])
     error_message = "All VPC connector IP CIDR ranges must be valid CIDR blocks."
   }
-  
+
   validation {
     condition = alltrue([
       for name, connector in var.vpc_connector_config.connectors :
@@ -256,7 +256,7 @@ variable "environment" {
   description = "Environment name (dev, staging, production)"
   type        = string
   default     = "dev"
-  
+
   validation {
     condition     = contains(["dev", "staging", "production"], var.environment)
     error_message = "Environment must be one of: dev, staging, production."

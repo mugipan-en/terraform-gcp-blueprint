@@ -23,7 +23,7 @@ output "queue_names" {
 output "queue_urls" {
   description = "Cloud Tasks queue URLs for API calls"
   value = {
-    for k, v in google_cloud_tasks_queue.queues : k => 
+    for k, v in google_cloud_tasks_queue.queues : k =>
     "https://cloudtasks.googleapis.com/v2/projects/${var.project_id}/locations/${v.location}/queues/${v.name}"
   }
 }
@@ -33,7 +33,7 @@ output "task_queues_summary" {
   description = "Summary of Cloud Tasks deployment"
   value = {
     total_queues = length(google_cloud_tasks_queue.queues)
-    
+
     queues_by_location = {
       for location in distinct([for q in google_cloud_tasks_queue.queues : q.location]) :
       location => [
@@ -41,11 +41,11 @@ output "task_queues_summary" {
         v.name if v.location == location
       ]
     }
-    
+
     queue_details = {
       for k, v in google_cloud_tasks_queue.queues : k => {
-        name     = v.name
-        location = v.location
+        name      = v.name
+        location  = v.location
         full_name = "projects/${var.project_id}/locations/${v.location}/queues/${v.name}"
       }
     }

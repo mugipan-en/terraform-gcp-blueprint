@@ -61,11 +61,11 @@ output "domain_mappings" {
   description = "Domain mapping information"
   value = {
     for k, v in google_app_engine_domain_mapping.domain_mappings : k => {
-      id                    = v.id
-      domain_name          = v.domain_name
-      name                 = v.name
-      resource_records     = v.resource_records
-      ssl_settings         = v.ssl_settings
+      id               = v.id
+      domain_name      = v.domain_name
+      name             = v.name
+      resource_records = v.resource_records
+      ssl_settings     = v.ssl_settings
     }
   }
 }
@@ -102,7 +102,7 @@ output "app_engine_urls" {
   description = "App Engine service URLs"
   value = var.create_application ? {
     default_url = "https://${google_app_engine_application.app[0].default_hostname}"
-    
+
     service_urls = merge(
       {
         for k, v in google_app_engine_standard_app_version.standard_versions :
@@ -113,7 +113,7 @@ output "app_engine_urls" {
         "${k}-${v.version_id}" => "https://${v.version_id}-dot-${v.service}-dot-${var.project_id}.appspot.com"
       }
     )
-    
+
     custom_domain_urls = {
       for k, v in google_app_engine_domain_mapping.domain_mappings :
       k => "https://${v.domain_name}"
@@ -125,26 +125,26 @@ output "app_engine_urls" {
 output "app_engine_summary" {
   description = "Summary of App Engine deployment"
   value = var.create_application ? {
-    application_id       = google_app_engine_application.app[0].id
-    location            = google_app_engine_application.app[0].location_id
-    default_hostname    = google_app_engine_application.app[0].default_hostname
-    total_standard_services  = length(google_app_engine_standard_app_version.standard_versions)
-    total_flexible_services  = length(google_app_engine_flexible_app_version.flexible_versions)
+    application_id          = google_app_engine_application.app[0].id
+    location                = google_app_engine_application.app[0].location_id
+    default_hostname        = google_app_engine_application.app[0].default_hostname
+    total_standard_services = length(google_app_engine_standard_app_version.standard_versions)
+    total_flexible_services = length(google_app_engine_flexible_app_version.flexible_versions)
     total_domain_mappings   = length(google_app_engine_domain_mapping.domain_mappings)
     total_firewall_rules    = length(google_app_engine_firewall_rule.firewall_rules)
-    
+
     services = {
       standard = [for k, v in google_app_engine_standard_app_version.standard_versions : {
-        name       = k
-        service    = v.service
-        version    = v.version_id
-        runtime    = v.runtime
+        name    = k
+        service = v.service
+        version = v.version_id
+        runtime = v.runtime
       }]
       flexible = [for k, v in google_app_engine_flexible_app_version.flexible_versions : {
-        name       = k
-        service    = v.service
-        version    = v.version_id
-        runtime    = v.runtime
+        name    = k
+        service = v.service
+        version = v.version_id
+        runtime = v.runtime
       }]
     }
   } : null

@@ -82,8 +82,8 @@ output "uptime_checks" {
   description = "Uptime check configurations"
   value = {
     for k, v in google_monitoring_uptime_check_config.http_checks : k => {
-      name         = v.name
-      display_name = v.display_name
+      name            = v.name
+      display_name    = v.display_name
       uptime_check_id = v.uptime_check_id
     }
   }

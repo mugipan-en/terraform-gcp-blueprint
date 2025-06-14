@@ -2,8 +2,8 @@
 resource "google_compute_network" "vpc" {
   name                    = "${var.name_prefix}-vpc"
   auto_create_subnetworks = false
-  routing_mode           = "REGIONAL"
-  description            = "VPC network for ${var.name_prefix} environment"
+  routing_mode            = "REGIONAL"
+  description             = "VPC network for ${var.name_prefix} environment"
 
   timeouts {
     create = "10m"
@@ -151,7 +151,7 @@ resource "google_compute_firewall" "allow_health_checks" {
   }
 
   source_ranges = [
-    "130.211.0.0/22",  # Google Cloud health check ranges
+    "130.211.0.0/22", # Google Cloud health check ranges
     "35.191.0.0/16"
   ]
 

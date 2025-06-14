@@ -14,8 +14,8 @@ output "service_account_keys" {
   description = "Service account keys"
   value = {
     for k, v in google_service_account_key.keys : k => {
-      name           = v.name
-      public_key     = v.public_key
+      name            = v.name
+      public_key      = v.public_key
       public_key_type = v.public_key_type
     }
   }

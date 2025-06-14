@@ -21,7 +21,7 @@ resource "google_app_engine_application" "app" {
 
   project     = var.project_id
   location_id = var.location_id
-  
+
   dynamic "iap" {
     for_each = var.iap_config != null ? [var.iap_config] : []
     content {
